@@ -34,7 +34,7 @@ export const register = async (req, res) => {
       email,
       phoneNumber,
       password: hashedPassword,
-      profile: {},
+      profile: "",
     });
 
     if (req.file) {
@@ -113,6 +113,7 @@ export const login = async (req, res) => {
           email: user.email,
           phoneNumber: user.phoneNumber,
           friends: user.friends,
+          profile: user.profile,
         },
       });
   } catch (error) {
