@@ -79,7 +79,12 @@ export default function Signup() {
     e.preventDefault();
 
     // Front-end validation
-    if (!input.fullname || !input.email || !input.phoneNumber || !input.password) {
+    if (
+      !input.fullname ||
+      !input.email ||
+      !input.phoneNumber ||
+      !input.password
+    ) {
       toast.error("Please fill in all required fields");
       return;
     }
@@ -122,7 +127,7 @@ export default function Signup() {
   }, [preview]);
 
   return (
-    <div className="relative bg-gradient-to-r from-purple-600 to-blue-500 min-h-screen w-full overflow-hidden flex items-center justify-center px-4">
+    <div className="relative bg-linear-to-r from-purple-600 to-blue-500 min-h-screen w-full overflow-hidden flex items-center justify-center px-4">
       {/* Background circles */}
       <div className="absolute -top-32 -left-32 w-64 h-64 bg-purple-400 rounded-full opacity-30 animate-pulse"></div>
       <div className="absolute -bottom-32 -right-32 w-96 h-96 bg-blue-400 rounded-full opacity-20 animate-pulse"></div>
@@ -160,7 +165,9 @@ export default function Signup() {
             required
             className={errors.email ? "border-red-500" : ""}
           />
-          {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
+          {errors.email && (
+            <p className="text-red-500 text-sm mt-1">{errors.email}</p>
+          )}
         </div>
 
         {/* Phone Number */}
@@ -236,14 +243,24 @@ export default function Signup() {
         </div>
 
         {/* Submit Button */}
-        <Button type="submit" className="w-full my-4 bg-indigo-600 hover:bg-indigo-700">
-          {loading ? <Loader2 className="h-5 w-5 animate-spin mx-auto" /> : "Sign Up"}
+        <Button
+          type="submit"
+          className="w-full my-4 bg-indigo-600 hover:bg-indigo-700"
+        >
+          {loading ? (
+            <Loader2 className="h-5 w-5 animate-spin mx-auto" />
+          ) : (
+            "Sign Up"
+          )}
         </Button>
 
         {/* Login Link */}
         <p className="text-xs text-gray-500 text-center">
           Already have an account?{" "}
-          <Link to="/login" className="text-indigo-600 font-medium hover:underline">
+          <Link
+            to="/login"
+            className="text-indigo-600 font-medium hover:underline"
+          >
             Login
           </Link>
         </p>
