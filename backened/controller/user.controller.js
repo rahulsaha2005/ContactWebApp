@@ -12,31 +12,28 @@ const formatDate = (date) => {
   });
 };
 
+
+// Register
 export const register = async (req, res) => {
   try {
     const { fullname, username, email, phoneNumber, password } = req.body;
 
     if (!fullname || !username || !email || !phoneNumber || !password) {
-      return res.status(400).json({
-        message: "All fields are required",
-        success: false,
-      });
+      return res
+        .status(400)
+        .json({ message: "All fields are required", success: false });
     }
 
-    const existingEmail = await User.findOne({ email });
-    if (existingEmail) {
-      return res.status(400).json({
-        message: "User with this email already exists",
-        success: false,
-      });
+    if (await User.findOne({ email })) {
+      return res
+        .status(400)
+        .json({ message: "Email already exists", success: false });
     }
 
-    const existingUsername = await User.findOne({ username });
-    if (existingUsername) {
-      return res.status(400).json({
-        message: "Username already taken",
-        success: false,
-      });
+    if (await User.findOne({ username })) {
+      return res
+        .status(400)
+        .json({ message: "Username already taken", success: false });
     }
 
     if (!/^[a-z0-9_]+$/.test(username)) {
@@ -62,10 +59,8 @@ export const register = async (req, res) => {
       const cloudResponse = await cloudinary.uploader.upload(fileUri.content, {
         folder: "profile_images",
       });
-      if (cloudResponse) {
-        user.profile = cloudResponse.secure_url;
-        await user.save();
-      }
+      if (cloudResponse) user.profile = cloudResponse.secure_url;
+      await user.save();
     }
 
     return res.status(201).json({
@@ -78,44 +73,36 @@ export const register = async (req, res) => {
         email: user.email,
         phoneNumber: user.phoneNumber,
         profile: user.profile,
+        friends: user.friends,
         joinedAt: formatDate(user.joinedAt),
       },
     });
   } catch (error) {
-    console.log("Register error:", error);
-    return res.status(500).json({
-      message: "Internal server error - register",
-      success: false,
-    });
+    console.error("Register error:", error);
+    return res.status(500).json({ message: "Server error", success: false });
   }
 };
 
+// Login
 export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
-
-    if (!email || !password) {
-      return res.status(400).json({
-        message: "Email and password are required",
-        success: false,
-      });
-    }
+    if (!email || !password)
+      return res
+        .status(400)
+        .json({ message: "Email and password required", success: false });
 
     const user = await User.findOne({ email });
-    if (!user) {
-      return res.status(400).json({
-        message: "Incorrect email or password",
-        success: false,
-      });
-    }
+    if (!user)
+      return res
+        .status(400)
+        .json({ message: "Invalid email or password", success: false });
 
-    const isPasswordValid = await bcrypt.compare(password, user.password);
-    if (!isPasswordValid) {
-      return res.status(400).json({
-        message: "Incorrect email or password",
-        success: false,
-      });
-    }
+    const valid = await bcrypt.compare(password, user.password);
+    if (!valid)
+      return res
+        .status(400)
+        .json({ message: "Invalid email or password", success: false });
 
     const token = jwt.sign({ userId: user._id }, process.env.SECRET_KEY, {
       expiresIn: "1d",
@@ -124,8 +111,8 @@ export const login = async (req, res) => {
     return res
       .status(200)
       .cookie("token", token, {
-        maxAge: 24 * 60 * 60 * 1000,
         httpOnly: true,
+        maxAge: 24 * 60 * 60 * 1000,
         secure: false,
         sameSite: "strict",
       })
@@ -138,101 +125,88 @@ export const login = async (req, res) => {
           username: user.username,
           email: user.email,
           phoneNumber: user.phoneNumber,
-          friends: user.friends,
           profile: user.profile,
+          friends: user.friends,
           joinedAt: formatDate(user.joinedAt),
         },
       });
   } catch (error) {
-    console.log("Login error:", error);
-    return res.status(500).json({
-      message: "Internal server error - login",
-      success: false,
-    });
+    console.error("Login error:", error);
+    return res.status(500).json({ message: "Server error", success: false });
   }
 };
 
+// Logout
 export const logout = async (req, res) => {
   try {
     return res
       .status(200)
       .cookie("token", "", { maxAge: 0 })
-      .json({ message: "Logged out successfully", success: true });
+      .json({ message: "Logged out", success: true });
   } catch (error) {
     console.error(error);
-    return res.status(500).json({
-      message: "Internal server error - logout",
-      success: false,
-    });
+    return res.status(500).json({ message: "Server error", success: false });
   }
 };
 
+// Update Profile
 export const updateProfile = async (req, res) => {
   try {
-    const { fullname, email, phoneNumber, username } = req.body;
     const userId = req.id; // from auth middleware
+    const { fullname, email, phoneNumber, username } = req.body;
 
     const user = await User.findById(userId);
-    if (!user) {
+    if (!user)
       return res
         .status(404)
         .json({ message: "User not found", success: false });
-    }
 
     if (fullname) user.fullname = fullname;
     if (email) user.email = email;
     if (phoneNumber) user.phoneNumber = phoneNumber;
 
     if (username) {
-      const usernameExists = await User.findOne({
-        username,
-        _id: { $ne: userId },
-      });
-      if (usernameExists) {
-        return res
-          .status(400)
-          .json({ message: "Username already taken", success: false });
-      }
       if (!/^[a-z0-9_]+$/.test(username)) {
         return res.status(400).json({
-          message:
-            "Username can only contain letters, numbers, and underscores",
+          message: "Username can only contain letters, numbers, underscores",
           success: false,
         });
       }
+      const exists = await User.findOne({ username, _id: { $ne: userId } });
+      if (exists)
+        return res
+          .status(400)
+          .json({ message: "Username already taken", success: false });
+
       user.username = username.toLowerCase();
     }
 
     if (req.file) {
       const fileUri = getDataUri(req.file);
-      const cloudResponse = await cloudinary.uploader.upload(fileUri.content, {
+      const cloudResp = await cloudinary.uploader.upload(fileUri.content, {
         folder: "profile_images",
       });
-      if (cloudResponse) {
-        user.profile = cloudResponse.secure_url;
-      }
+      if (cloudResp) user.profile = cloudResp.secure_url;
     }
 
-    await user.save();
+    const updatedUser = await user.save();
 
     return res.status(200).json({
       message: "Profile updated successfully",
       success: true,
       user: {
-        _id: user._id,
-        fullname: user.fullname,
-        username: user.username,
-        email: user.email,
-        phoneNumber: user.phoneNumber,
-        profile: user.profile,
-        joinedAt: formatDate(user.joinedAt),
+        _id: updatedUser._id,
+        fullname: updatedUser.fullname,
+        username: updatedUser.username,
+        email: updatedUser.email,
+        phoneNumber: updatedUser.phoneNumber,
+        profile: updatedUser.profile,
+        friends: updatedUser.friends,
+        joinedAt: formatDate(updatedUser.joinedAt),
       },
     });
   } catch (error) {
     console.error("Update profile error:", error);
-    return res.status(500).json({
-      message: "Internal server error - update profile",
-      success: false,
-    });
+    return res.status(500).json({ message: "Server error", success: false });
   }
 };
