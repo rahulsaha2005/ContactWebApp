@@ -45,13 +45,10 @@ export default function Login() {
 
   return (
     <div className="relative min-h-[calc(100vh-64px)] p-4 flex items-center justify-center bg-linear-to-br from-indigo-600 via-purple-600 to-pink-500 px-4 overflow-hidden">
-      {/* Decorative blobs */}
-
       <form
         onSubmit={submitHandler}
         className="relative w-full max-w-md rounded-2xl bg-white/85 backdrop-blur-xl shadow-2xl border border-white/30 p-8 sm:p-10"
       >
-        {/* Header */}
         <h1 className="text-2xl font-bold text-center text-gray-800">
           Welcome Back
         </h1>
@@ -59,7 +56,6 @@ export default function Login() {
           Login to your account
         </p>
 
-        {/* Email */}
         <div className="mb-5">
           <Label className="text-sm font-medium text-gray-700">
             Email address
@@ -77,7 +73,6 @@ export default function Login() {
           </div>
         </div>
 
-        {/* Password */}
         <div className="mb-4">
           <Label className="text-sm font-medium text-gray-700">Password</Label>
           <div className="relative mt-1">
@@ -93,7 +88,6 @@ export default function Login() {
           </div>
         </div>
 
-        {/* Remember / Forgot */}
         <div className="flex items-center justify-between mb-6 text-sm">
           <label className="flex items-center gap-2 text-gray-600">
             <input type="checkbox" className="accent-indigo-600" />
@@ -101,7 +95,6 @@ export default function Login() {
           </label>
         </div>
 
-        {/* Button */}
         <Button
           type="submit"
           disabled={loading}
@@ -117,7 +110,6 @@ export default function Login() {
           )}
         </Button>
 
-        {/* Footer */}
         <p className="mt-6 text-center text-sm text-gray-600">
           Don&apos;t have an account?{" "}
           <Link

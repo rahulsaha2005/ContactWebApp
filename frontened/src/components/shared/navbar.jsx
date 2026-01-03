@@ -17,7 +17,6 @@ export const Navbar = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  // Corrected logout
   const handleLogout = async () => {
     try {
       const res = await axios.get(`${USER_API_END_POINT}/logout`, {
@@ -25,13 +24,13 @@ export const Navbar = () => {
       });
 
       if (res.data.success) {
-        dispatch(setAuthUser(null)); // clear redux auth state
+        dispatch(setAuthUser(null));
         toast.success(res.data.message);
-        navigate("/login"); // redirect to login
+        navigate("/login");
       }
     } catch (error) {
       console.error(error);
-      dispatch(setAuthUser(null)); // clear redux even if API fails
+      dispatch(setAuthUser(null));
       toast.error(error?.response?.data?.message || "Logout failed");
       navigate("/login");
     }
@@ -110,7 +109,6 @@ export const Navbar = () => {
   return (
     <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-lg border-b border-gray-200">
       <div className="max-w-7xl mx-auto h-16 px-4 flex items-center justify-between">
-        {/* Logo */}
         <div className="flex items-center gap-4">
           <Link to="/" className="text-2xl font-bold">
             My<span className="text-indigo-600">Contacts</span>
@@ -120,7 +118,6 @@ export const Navbar = () => {
           </span>
         </div>
 
-        {/* Desktop Menu */}
         <div className="hidden md:flex items-center gap-10">
           <ul className="flex gap-8 text-sm">
             <li>
@@ -138,7 +135,6 @@ export const Navbar = () => {
           {!loading && (user ? popContent : LoginSignup)}
         </div>
 
-        {/* Mobile toggle */}
         <button
           className="md:hidden p-2 rounded-lg hover:bg-gray-100 transition"
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -147,7 +143,6 @@ export const Navbar = () => {
         </button>
       </div>
 
-      {/* Mobile Menu */}
       {isMobileMenuOpen && (
         <div className="md:hidden bg-white/90 backdrop-blur border-t px-4 py-4 space-y-4">
           <ul className="flex flex-col gap-3 text-sm">

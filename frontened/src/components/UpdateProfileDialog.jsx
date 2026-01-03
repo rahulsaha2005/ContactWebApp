@@ -67,8 +67,33 @@ export default function UpdateProfileDialog({ open, setOpen }) {
     reader.readAsDataURL(file);
   };
 
+  const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
+  const isValidPhone = (phone) => /^\d{10,15}$/.test(phone.replace(/\s+/g, ""));
+
   const submitHandler = async (e) => {
     e.preventDefault();
+
+    if (!input.fullname.trim()) {
+      toast.error("Full name is required");
+      return;
+    }
+
+    if (!input.username.trim()) {
+      toast.error("Username is required");
+      return;
+    }
+
+    if (!isValidEmail(input.email)) {
+      toast.error("Invalid email address");
+      return;
+    }
+
+    if (!isValidPhone(input.phoneNumber)) {
+      toast.error("Invalid phone number (10-15 digits)");
+      return;
+    }
+
     const formData = new FormData();
     formData.append("fullname", input.fullname);
     formData.append("username", input.username);
@@ -111,7 +136,6 @@ export default function UpdateProfileDialog({ open, setOpen }) {
         </DialogHeader>
 
         <form onSubmit={submitHandler} className="space-y-4 mt-3">
-          {/* Profile Preview */}
           <div className="flex justify-center mb-2">
             {preview ? (
               <img
@@ -144,7 +168,6 @@ export default function UpdateProfileDialog({ open, setOpen }) {
             />
           </div>
 
-          {/* Full Name */}
           <div className="flex flex-col sm:flex-row sm:items-center gap-2">
             <Label
               htmlFor="fullname"
@@ -162,7 +185,6 @@ export default function UpdateProfileDialog({ open, setOpen }) {
             />
           </div>
 
-          {/* Username */}
           <div className="flex flex-col sm:flex-row sm:items-center gap-2">
             <Label
               htmlFor="username"
@@ -181,7 +203,6 @@ export default function UpdateProfileDialog({ open, setOpen }) {
             />
           </div>
 
-          {/* Email */}
           <div className="flex flex-col sm:flex-row sm:items-center gap-2">
             <Label
               htmlFor="email"
@@ -199,7 +220,6 @@ export default function UpdateProfileDialog({ open, setOpen }) {
             />
           </div>
 
-          {/* Phone */}
           <div className="flex flex-col sm:flex-row sm:items-center gap-2">
             <Label
               htmlFor="phoneNumber"
@@ -228,7 +248,7 @@ export default function UpdateProfileDialog({ open, setOpen }) {
           </DialogFooter>
 
           <DialogDescription className="text-xs text-center text-gray-500 mt-1">
-            Update your profile image, username, and contact info.
+            Update your profile image, username, email, and phone number.
           </DialogDescription>
         </form>
       </DialogContent>

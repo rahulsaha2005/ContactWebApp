@@ -122,7 +122,6 @@ export default function Signup() {
           Join us and get started
         </p>
 
-        {/* Inputs */}
         {[
           { label: "Full Name", name: "fullname", icon: User },
           { label: "Email", name: "email", icon: Mail },
@@ -149,7 +148,6 @@ export default function Signup() {
           </div>
         ))}
 
-        {/* Image Upload */}
         <div className="mb-6">
           <Label className="text-sm font-medium text-gray-700">
             Profile Image (optional)
@@ -176,7 +174,6 @@ export default function Signup() {
           </div>
         </div>
 
-        {/* Submit */}
         <Button
           type="submit"
           disabled={loading}
@@ -197,7 +194,6 @@ export default function Signup() {
         </p>
       </form>
 
-      {/* Image Modal */}
       {open && (
         <div
           className="fixed inset-0 bg-black/70 flex items-center justify-center z-50"

@@ -4,7 +4,6 @@ import jwt from "jsonwebtoken";
 import getDataUri from "../utils/datauri.js";
 import cloudinary from "../utils/cloudinary.js";
 
-// Helper to format date
 const formatDate = (date) => {
   return new Date(date).toLocaleDateString("en-IN", {
     year: "numeric",
@@ -13,7 +12,6 @@ const formatDate = (date) => {
   });
 };
 
-// -------------------- REGISTER NEW USER --------------------
 export const register = async (req, res) => {
   try {
     const { fullname, username, email, phoneNumber, password } = req.body;
@@ -92,7 +90,6 @@ export const register = async (req, res) => {
   }
 };
 
-// -------------------- LOGIN --------------------
 export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -155,7 +152,6 @@ export const login = async (req, res) => {
   }
 };
 
-// -------------------- LOGOUT --------------------
 export const logout = async (req, res) => {
   try {
     return res
@@ -171,7 +167,6 @@ export const logout = async (req, res) => {
   }
 };
 
-// -------------------- UPDATE PROFILE --------------------
 export const updateProfile = async (req, res) => {
   try {
     const { fullname, email, phoneNumber, username } = req.body;

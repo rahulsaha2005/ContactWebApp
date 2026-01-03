@@ -10,24 +10,18 @@ import FriendRoute from "./routes/friend.route.js";
 const app = express();
 dotenv.config({});
 
-// make data availabe in request.body
 app.use(express.json());
 
-//parses form data
 app.use(
   express.urlencoded({
-    // allow nested objects
     extended: true,
   })
 );
 
-//read cookies from browser and store them in req.bodies
 app.use(cookieParser());
 
 const corsOptions = {
-  // fronted at these port react vue
   origin: "http://localhost:5173",
-  // allow jwt,sessions
   credentials: true,
 };
 app.use(cors(corsOptions));
