@@ -28,7 +28,6 @@ export default function AddFriend({ open, setOpen }) {
     Message: "",
   });
 
-  // Reset form whenever dialog opens
   useEffect(() => {
     if (open) {
       setInput({
@@ -40,18 +39,15 @@ export default function AddFriend({ open, setOpen }) {
     }
   }, [open]);
 
-  // Handle input changes
   const changeEventHandler = (e) => {
     const { name, value } = e.target;
     setInput((prev) => ({ ...prev, [name]: value }));
   };
 
-  // Validation helpers
   const isValidEmail = (email) =>
     /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
   const isValidPhone = (phone) => /^\d{10,15}$/.test(phone.replace(/\D/g, ""));
 
-  // Submit handler
   const submitHandler = async (e) => {
     e.preventDefault();
 
@@ -84,7 +80,6 @@ export default function AddFriend({ open, setOpen }) {
       });
 
       if (res.data.success) {
-        // Update Redux with new user object
         dispatch(setAuthUser(res.data.user));
         toast.success(res.data.message);
         setOpen(false);
@@ -149,7 +144,6 @@ export default function AddFriend({ open, setOpen }) {
             />
           </div>
 
-          {/* Friend Phone */}
           <div className="flex flex-col sm:flex-row sm:items-center gap-2">
             <Label
               htmlFor="friendPhone"
@@ -169,7 +163,6 @@ export default function AddFriend({ open, setOpen }) {
             />
           </div>
 
-          {/* Optional Message */}
           <div className="flex flex-col sm:flex-row sm:items-start gap-2">
             <Label
               htmlFor="Message"

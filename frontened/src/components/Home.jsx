@@ -54,7 +54,6 @@ export default function Home() {
       {/* Features */}
       <section className="relative z-10 max-w-7xl mx-auto px-6 pb-20">
         <div className="grid gap-6 md:grid-cols-3">
-          {/* Card 1 */}
           <div className="bg-white/85 backdrop-blur-lg rounded-2xl p-6 shadow-xl border border-white/30">
             <Users className="text-indigo-600 mb-4" size={32} />
             <h3 className="text-xl font-semibold text-gray-800">
@@ -65,7 +64,6 @@ export default function Home() {
             </p>
           </div>
 
-          {/* Card 2 */}
           <div className="bg-white/85 backdrop-blur-lg rounded-2xl p-6 shadow-xl border border-white/30">
             <Shield className="text-green-600 mb-4" size={32} />
             <h3 className="text-xl font-semibold text-gray-800">
@@ -76,7 +74,6 @@ export default function Home() {
             </p>
           </div>
 
-          {/* Card 3 */}
           <div className="bg-white/85 backdrop-blur-lg rounded-2xl p-6 shadow-xl border border-white/30">
             <Search className="text-pink-600 mb-4" size={32} />
             <h3 className="text-xl font-semibold text-gray-800">Fast Search</h3>

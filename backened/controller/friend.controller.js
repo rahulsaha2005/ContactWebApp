@@ -1,9 +1,8 @@
 import User from "../models/user.js";
 
-// Add friend
 export const addFriend = async (req, res) => {
   try {
-    const userId = req.id; // from auth middleware
+    const userId = req.id;
     const { friendName, friendEmail, friendPhone, Message } = req.body;
 
     const user = await User.findById(userId);
@@ -13,7 +12,6 @@ export const addFriend = async (req, res) => {
         .json({ success: false, message: "User not found" });
     }
 
-    // Check if friend already exists
     const exists = user.friends.some(
       (f) => f.friendEmail === friendEmail && f.friendPhone === friendPhone
     );
@@ -24,7 +22,6 @@ export const addFriend = async (req, res) => {
         .json({ success: false, message: "Friend already added" });
     }
 
-    // Add new friend
     user.friends.push({
       friendName,
       friendEmail,
@@ -32,13 +29,12 @@ export const addFriend = async (req, res) => {
       Message: Message || "",
     });
 
-    // Save updated user
     const updatedUser = await user.save();
 
     return res.status(200).json({
       success: true,
       message: "Friend added successfully",
-      user: updatedUser, // send full user object
+      user: updatedUser,
     });
   } catch (error) {
     console.error(error);
@@ -46,10 +42,9 @@ export const addFriend = async (req, res) => {
   }
 };
 
-// Delete friend
 export const deleteFriend = async (req, res) => {
   try {
-    const userId = req.id; // from auth middleware
+    const userId = req.id;
     const { friendEmail, friendPhone } = req.body;
 
     const user = await User.findById(userId);
@@ -73,7 +68,7 @@ export const deleteFriend = async (req, res) => {
     return res.status(200).json({
       success: true,
       message: "Friend deleted successfully",
-      user: updatedUser, // send full user object
+      user: updatedUser,
     });
   } catch (error) {
     console.error(error);
@@ -81,10 +76,9 @@ export const deleteFriend = async (req, res) => {
   }
 };
 
-// Update friend
 export const updateFriend = async (req, res) => {
   try {
-    const userId = req.id; // from auth middleware
+    const userId = req.id;
     const {
       friendEmail,
       friendPhone,
@@ -115,7 +109,6 @@ export const updateFriend = async (req, res) => {
         .status(404)
         .json({ success: false, message: "Friend not found" });
 
-    // Update fields
     if (friendName) user.friends[friendIndex].friendName = friendName;
     if (newEmail) user.friends[friendIndex].friendEmail = newEmail;
     if (newPhone) user.friends[friendIndex].friendPhone = newPhone;
@@ -126,7 +119,7 @@ export const updateFriend = async (req, res) => {
     return res.status(200).json({
       success: true,
       message: "Friend updated successfully",
-      user: updatedUser, // send full user object
+      user: updatedUser,
     });
   } catch (error) {
     console.error(error);

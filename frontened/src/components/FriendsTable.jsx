@@ -51,7 +51,6 @@ export default function FriendsTable({ onEdit, onDelete }) {
                 {friend.Message || "-"}
               </td>
               <td className="px-4 py-2 whitespace-nowrap text-center flex justify-center gap-2">
-                {/* TODO: Add your Edit JSX or logic here */}
                 <Button
                   size="sm"
                   variant="outline"
@@ -61,7 +60,6 @@ export default function FriendsTable({ onEdit, onDelete }) {
                   <Pen className="h-4 w-4" /> Edit
                 </Button>
 
-                {/* TODO: Add your Delete JSX or logic here */}
                 <Button
                   size="sm"
                   variant="destructive"

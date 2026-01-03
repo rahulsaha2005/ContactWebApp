@@ -68,7 +68,7 @@ export default function Signup() {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    if (preview) URL.revokeObjectURL(preview); // revoke old preview
+    if (preview) URL.revokeObjectURL(preview); 
     setInput({ ...input, file });
     setPreview(URL.createObjectURL(file));
   };
@@ -114,7 +114,6 @@ export default function Signup() {
     }
   };
 
-  // Cleanup preview on unmount
   useEffect(() => {
     return () => {
       if (preview) URL.revokeObjectURL(preview);
@@ -207,7 +206,6 @@ export default function Signup() {
         </p>
       </form>
 
-      {/* Image preview overlay */}
       {previewOpen && (
         <div
           className="fixed inset-0 bg-black/70 flex items-center justify-center z-50"
