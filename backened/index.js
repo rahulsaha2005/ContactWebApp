@@ -7,29 +7,35 @@ import connectDB from "./utils/db.js";
 import UserRoute from "./routes/user.route.js";
 import FriendRoute from "./routes/friend.route.js";
 
+// Load env variables
+dotenv.config();
+
 const app = express();
-dotenv.config({});
 
+// Connect to MongoDB immediately
+connectDB();
+
+// Middlewares
 app.use(express.json());
-
-app.use(
-  express.urlencoded({
-    extended: true,
-  })
-);
-
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
+// CORS: allow local and deployed frontend
 const corsOptions = {
-  origin: "http://localhost:5173",
+  origin: process.env.FRONTEND_URL || "http://localhost:5173",
   credentials: true,
 };
 app.use(cors(corsOptions));
 
+// Routes
 app.use("/api/v1/user", UserRoute);
 app.use("/api/v1/user/friend", FriendRoute);
 
-app.listen(process.env.PORT, () => {
-  connectDB();
-  console.log(`server running at port ${process.env.PORT}`);
-});
+// Export app for Vercel serverless
+export default app;
+
+// Only listen locally
+if (process.env.VERCEL_ENV === undefined) {
+  const PORT = process.env.PORT || 8000;
+  app.listen(PORT, () => console.log(`Server running at port ${PORT}`));
+}
