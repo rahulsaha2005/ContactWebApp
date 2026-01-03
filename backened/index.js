@@ -29,7 +29,7 @@ app.use("/api/v1/user/friend", FriendRoute);
 
 // Serve frontend
 const __dirname = path.resolve();
-const frontendPath = path.join(__dirname, "frontend", "dist");
+const frontendPath = path.join(__dirname, "frontened", "dist");
 
 app.use(express.static(frontendPath));
 
