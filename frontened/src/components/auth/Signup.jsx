@@ -13,10 +13,10 @@ import { Loader2, Mail, User, Phone, Lock, Image } from "lucide-react";
 export default function Signup() {
   const [input, setInput] = useState({
     fullname: "",
+    username: "",
     email: "",
     phoneNumber: "",
     password: "",
-    role: "student",
     file: null,
   });
 
@@ -27,14 +27,14 @@ export default function Signup() {
   });
 
   const [preview, setPreview] = useState(null);
-  const [open, setOpen] = useState(false);
+  const [previewOpen, setPreviewOpen] = useState(false);
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { loading } = useSelector((state) => state.auth);
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  const phoneRegex = /^[0-9]{10}$/;
+  const phoneRegex = /^[0-9]{10,15}$/; // allow 10–15 digits
   const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d).{6,}$/;
 
   const changeEventHandler = (e) => {
@@ -50,7 +50,9 @@ export default function Signup() {
     if (name === "phoneNumber")
       setErrors((p) => ({
         ...p,
-        phoneNumber: phoneRegex.test(value) ? "" : "Phone must be 10 digits",
+        phoneNumber: phoneRegex.test(value.replace(/\D/g, ""))
+          ? ""
+          : "Phone must be 10-15 digits",
       }));
 
     if (name === "password")
@@ -58,13 +60,15 @@ export default function Signup() {
         ...p,
         password: passwordRegex.test(value)
           ? ""
-          : "Password must include a number",
+          : "Password must include a number and be min 6 chars",
       }));
   };
 
   const changeFileHandler = (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
+
+    if (preview) URL.revokeObjectURL(preview); // revoke old preview
     setInput({ ...input, file });
     setPreview(URL.createObjectURL(file));
   };
@@ -77,18 +81,23 @@ export default function Signup() {
       !input.email ||
       !input.phoneNumber ||
       !input.password
-    )
+    ) {
       return toast.error("Please fill all required fields");
+    }
 
-    if (errors.email || errors.phoneNumber || errors.password)
+    if (errors.email || errors.phoneNumber || errors.password) {
       return toast.error("Fix validation errors");
+    }
 
     try {
       dispatch(setLoading(true));
       const formData = new FormData();
-      Object.entries(input).forEach(
-        ([key, val]) => val && formData.append(key, val)
-      );
+      formData.append("fullname", input.fullname);
+      formData.append("email", input.email);
+      formData.append("phoneNumber", input.phoneNumber);
+      formData.append("password", input.password);
+      formData.append("username", input.username);
+      if (input.file) formData.append("file", input.file);
 
       const res = await axios.post(`${USER_API_END_POINT}/register`, formData, {
         withCredentials: true,
@@ -105,12 +114,15 @@ export default function Signup() {
     }
   };
 
+  // Cleanup preview on unmount
   useEffect(() => {
-    return () => preview && URL.revokeObjectURL(preview);
+    return () => {
+      if (preview) URL.revokeObjectURL(preview);
+    };
   }, [preview]);
 
   return (
-    <div className="relative min-h-[calc(100vh-64px)] p-4 flex items-center justify-center bg-linear-to-br from-indigo-600 via-purple-600 to-pink-500 px-4 overflow-hidden">
+    <div className="relative min-h-[calc(100vh-64px)] p-4 flex items-center justify-center bg-linear-to-br from-indigo-600 via-purple-600 to-pink-500 overflow-hidden">
       <form
         onSubmit={submitHandler}
         className="relative w-full max-w-lg bg-white/85 backdrop-blur-xl rounded-2xl shadow-2xl border border-white/30 p-8 sm:p-10"
@@ -127,6 +139,7 @@ export default function Signup() {
           { label: "Email", name: "email", icon: Mail },
           { label: "Phone Number", name: "phoneNumber", icon: Phone },
           { label: "Password", name: "password", icon: Lock, type: "password" },
+          { label: "username", name: "username", icon: User, type: "username" },
         ].map(({ label, name, icon: Icon, type = "text" }) => (
           <div key={name} className="mb-4">
             <Label className="text-sm font-medium text-gray-700">{label}</Label>
@@ -137,7 +150,7 @@ export default function Signup() {
                 name={name}
                 value={input[name]}
                 onChange={changeEventHandler}
-                className={`pl-10 h-11 rounded-lg ${
+                className={`pl-10 h-11 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400 ${
                   errors[name] ? "border-red-500" : ""
                 }`}
               />
@@ -168,7 +181,7 @@ export default function Signup() {
                 src={preview}
                 alt="preview"
                 className="w-14 h-14 rounded-full object-cover border cursor-pointer"
-                onClick={() => setOpen(true)}
+                onClick={() => setPreviewOpen(true)}
               />
             )}
           </div>
@@ -177,10 +190,10 @@ export default function Signup() {
         <Button
           type="submit"
           disabled={loading}
-          className="w-full h-11 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg shadow-lg transition"
+          className="w-full h-11 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg shadow-lg transition disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center"
         >
           {loading ? (
-            <Loader2 className="animate-spin h-5 w-5 mx-auto" />
+            <Loader2 className="animate-spin h-5 w-5" />
           ) : (
             "Create Account"
           )}
@@ -194,10 +207,11 @@ export default function Signup() {
         </p>
       </form>
 
-      {open && (
+      {/* Image preview overlay */}
+      {previewOpen && (
         <div
           className="fixed inset-0 bg-black/70 flex items-center justify-center z-50"
-          onClick={() => setOpen(false)}
+          onClick={() => setPreviewOpen(false)}
         >
           <img
             src={preview}

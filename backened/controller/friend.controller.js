@@ -7,20 +7,24 @@ export const addFriend = async (req, res) => {
     const { friendName, friendEmail, friendPhone, Message } = req.body;
 
     const user = await User.findById(userId);
-    if (!user)
+    if (!user) {
       return res
         .status(404)
-        .json({ success: false, Message: "User not found" });
+        .json({ success: false, message: "User not found" });
+    }
 
+    // Check if friend already exists
     const exists = user.friends.some(
       (f) => f.friendEmail === friendEmail && f.friendPhone === friendPhone
     );
 
-    if (exists)
+    if (exists) {
       return res
         .status(400)
-        .json({ success: false, Message: "Friend already added" });
+        .json({ success: false, message: "Friend already added" });
+    }
 
+    // Add new friend
     user.friends.push({
       friendName,
       friendEmail,
@@ -28,16 +32,17 @@ export const addFriend = async (req, res) => {
       Message: Message || "",
     });
 
-    await user.save();
+    // Save updated user
+    const updatedUser = await user.save();
 
     return res.status(200).json({
       success: true,
       message: "Friend added successfully",
-      friends: user.friends,
+      user: updatedUser, // send full user object
     });
   } catch (error) {
     console.error(error);
-    return res.status(500).json({ success: false, Message: "Server error" });
+    return res.status(500).json({ success: false, message: "Server error" });
   }
 };
 
