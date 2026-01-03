@@ -18,24 +18,24 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 // CORS
-app.use(
-  cors({
-    origin: "http://localhost:5173",
-    credentials: true,
-  })
-);
+app.use(cors({
+  origin: true,
+  credentials: true,
+}));
 
 // API routes
 app.use("/api/v1/user", UserRoute);
 app.use("/api/v1/user/friend", FriendRoute);
 
-// Serve frontend static files
-const _dirname = path.resolve();
-app.use(express.static(path.join(_dirname, "frontened/dist")));
+// Serve frontend
+const __dirname = path.resolve();
+const frontendPath = path.join(__dirname, "frontend", "dist");
 
-// Catch-all for SPA (React/Vite)
+app.use(express.static(frontendPath));
+
+// ✅ SPA fallback — EXPRESS 5 SAFE
 app.use((req, res) => {
-  res.sendFile(path.join(_dirname, "frontened/dist/index.html"));
+  res.sendFile(path.join(frontendPath, "index.html"));
 });
 
 // Start server
