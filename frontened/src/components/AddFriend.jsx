@@ -20,7 +20,6 @@ import { setAuthUser } from "../redux/authSlice.js";
 export default function AddFriend({ open, setOpen }) {
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
-
   const [input, setInput] = useState({
     friendName: "",
     friendEmail: "",
@@ -29,14 +28,13 @@ export default function AddFriend({ open, setOpen }) {
   });
 
   useEffect(() => {
-    if (open) {
+    if (open)
       setInput({
         friendName: "",
         friendEmail: "",
         friendPhone: "",
         Message: "",
       });
-    }
   }, [open]);
 
   const changeEventHandler = (e) => {
@@ -50,37 +48,19 @@ export default function AddFriend({ open, setOpen }) {
 
   const submitHandler = async (e) => {
     e.preventDefault();
-
-    if (!input.friendName.trim()) {
-      toast.error("Friend name is required");
-      return;
-    }
-
-    if (!isValidEmail(input.friendEmail)) {
-      toast.error("Invalid email address");
-      return;
-    }
-
-    if (!isValidPhone(input.friendPhone)) {
-      toast.error("Invalid phone number (10-15 digits)");
-      return;
-    }
-
-    const formData = new FormData();
-    formData.append("friendName", input.friendName.trim());
-    formData.append("friendEmail", input.friendEmail.trim());
-    formData.append("friendPhone", input.friendPhone.trim());
-    formData.append("Message", input.Message.trim() || "");
+    if (!input.friendName.trim()) return toast.error("Friend name is required");
+    if (!isValidEmail(input.friendEmail))
+      return toast.error("Invalid email address");
+    if (!isValidPhone(input.friendPhone))
+      return toast.error("Invalid phone number (10-15 digits)");
 
     try {
       setLoading(true);
-      const res = await axios.post(`${FRIEND_API_END_POINT}/add`, formData, {
-        headers: { "Content-Type": "multipart/form-data" },
+      const res = await axios.post(`${FRIEND_API_END_POINT}/add`, input, {
         withCredentials: true,
       });
-
       if (res.data.success) {
-        dispatch(setAuthUser(res.data.user));
+        dispatch(setAuthUser(res.data.user)); 
         toast.success(res.data.message);
         setOpen(false);
       }
@@ -93,18 +73,12 @@ export default function AddFriend({ open, setOpen }) {
 
   return (
     <Dialog open={open} onOpenChange={!loading ? setOpen : () => {}}>
-      <DialogContent
-        className="sm:max-w-sm w-full rounded-lg p-4 sm:p-6 bg-white dark:bg-zinc-900 shadow-lg max-h-[90vh] overflow-y-auto"
-        onInteractOutside={() => !loading && setOpen(false)}
-      >
+      <DialogContent className="sm:max-w-sm w-full rounded-lg p-6 bg-white dark:bg-zinc-900 shadow-lg max-h-[90vh] overflow-y-auto">
         <DialogHeader className="text-center">
-          <DialogTitle className="text-lg font-semibold">
-            Add Friend
-          </DialogTitle>
+          <DialogTitle>Add Friend</DialogTitle>
         </DialogHeader>
 
         <form onSubmit={submitHandler} className="space-y-4 mt-3">
-          {/* Friend Name */}
           <div className="flex flex-col sm:flex-row sm:items-center gap-2">
             <Label
               htmlFor="friendName"
@@ -115,16 +89,13 @@ export default function AddFriend({ open, setOpen }) {
             <Input
               id="friendName"
               name="friendName"
-              type="text"
               value={input.friendName}
               onChange={changeEventHandler}
               placeholder="John Doe"
-              className="flex-1"
               required
             />
           </div>
 
-          {/* Friend Email */}
           <div className="flex flex-col sm:flex-row sm:items-center gap-2">
             <Label
               htmlFor="friendEmail"
@@ -135,11 +106,9 @@ export default function AddFriend({ open, setOpen }) {
             <Input
               id="friendEmail"
               name="friendEmail"
-              type="email"
               value={input.friendEmail}
               onChange={changeEventHandler}
               placeholder="john@example.com"
-              className="flex-1"
               required
             />
           </div>
@@ -154,11 +123,9 @@ export default function AddFriend({ open, setOpen }) {
             <Input
               id="friendPhone"
               name="friendPhone"
-              type="tel"
               value={input.friendPhone}
               onChange={changeEventHandler}
               placeholder="+91 9876543210"
-              className="flex-1"
               required
             />
           </div>
@@ -180,20 +147,16 @@ export default function AddFriend({ open, setOpen }) {
             />
           </div>
 
-          <DialogFooter className="mt-2">
+          <DialogFooter>
             <Button
               type="submit"
-              className="w-full bg-[#4f39f6] text-white font-semibold rounded-lg shadow-md hover:bg-[#3727c7] hover:shadow-lg transition-all duration-200 flex items-center justify-center gap-2"
+              className="w-full bg-[#4f39f6] text-white flex items-center justify-center gap-2"
               disabled={loading}
             >
               {loading && <Loader2 className="animate-spin h-4 w-4" />}
               Add Friend
             </Button>
           </DialogFooter>
-
-          <DialogDescription className="text-xs text-center text-gray-500 mt-1">
-            Enter your friend's name, email, and phone number to add them.
-          </DialogDescription>
         </form>
       </DialogContent>
     </Dialog>

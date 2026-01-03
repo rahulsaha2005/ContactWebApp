@@ -31,7 +31,7 @@ export default function DeleteFriend({ open, setOpen, friend }) {
       });
 
       if (res.data.success) {
-        dispatch(setAuthUser({ friends: res.data.friends }));
+        dispatch(setAuthUser(res.data.user));
         toast.success(res.data.message);
         setOpen(false);
       }
