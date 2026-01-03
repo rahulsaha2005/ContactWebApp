@@ -32,7 +32,7 @@ export default function Home() {
                 </Button>
               </Link>
               <Link to="/browse">
-                <Button variant="outline" className="border-white text-white">
+                <Button variant="outline" className="border-white text-black">
                   Browse Contacts
                 </Button>
               </Link>
@@ -42,7 +42,7 @@ export default function Home() {
           {user && (
             <div className="mt-8 flex flex-wrap gap-4">
               <Link to="/browse">
-                <Button variant="outline" className="border-white text-white">
+                <Button variant="outline" className="border-white text-black">
                   Browse Contacts
                 </Button>
               </Link>
@@ -51,7 +51,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Features */}
       <section className="relative z-10 max-w-7xl mx-auto px-6 pb-20">
         <div className="grid gap-6 md:grid-cols-3">
           <div className="bg-white/85 backdrop-blur-lg rounded-2xl p-6 shadow-xl border border-white/30">
