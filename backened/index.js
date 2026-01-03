@@ -22,7 +22,7 @@ app.use(cookieParser());
 
 // CORS: allow local and deployed frontend
 const corsOptions = {
-  origin: process.env.FRONTEND_URL || "http://localhost:5173",
+  origin: process.env.PORT || "http://localhost:5173",
   credentials: true,
 };
 app.use(cors(corsOptions));
@@ -35,7 +35,5 @@ app.use("/api/v1/user/friend", FriendRoute);
 export default app;
 
 // Only listen locally
-if (process.env.VERCEL_ENV === undefined) {
-  const PORT = process.env.PORT || 8000;
-  app.listen(PORT, () => console.log(`Server running at port ${PORT}`));
-}
+const PORT = process.env.PORT || 8000;
+app.listen(PORT, () => console.log(`Server running at port ${PORT}`));
