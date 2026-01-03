@@ -110,7 +110,7 @@ export default function Signup() {
   }, [preview]);
 
   return (
-    <div className="relative min-h-[calc(100vh-64px)] p-4 flex items-center justify-center bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-500 px-4 overflow-hidden">
+    <div className="relative min-h-[calc(100vh-64px)] p-4 flex items-center justify-center bg-linear-to-br from-indigo-600 via-purple-600 to-pink-500 px-4 overflow-hidden">
       <form
         onSubmit={submitHandler}
         className="relative w-full max-w-lg bg-white/85 backdrop-blur-xl rounded-2xl shadow-2xl border border-white/30 p-8 sm:p-10"

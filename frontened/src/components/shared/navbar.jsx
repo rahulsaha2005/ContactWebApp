@@ -163,33 +163,34 @@ export const Navbar = () => {
             </li>
           </ul>
 
-          {!loading && (user ? (
-            <div className="flex flex-col gap-2">
-              <Link
-                to="/profile"
-                className="px-3 py-2 hover:bg-gray-100 rounded"
-              >
-                Profile
-              </Link>
-              <button
-                className="px-3 py-2 text-red-500 hover:bg-red-50 rounded"
-                onClick={handleLogout}
-              >
-                Logout
-              </button>
-            </div>
-          ) : (
-            <div className="flex flex-col gap-2">
-              <Link to="/login">
-                <Button variant="outline">Login</Button>
-              </Link>
-              <Link to="/signup">
-                <Button className="bg-indigo-600 hover:bg-indigo-700 text-white">
-                  Sign Up
-                </Button>
-              </Link>
-            </div>
-          ))}
+          {!loading &&
+            (user ? (
+              <div className="flex flex-col gap-2">
+                <Link
+                  to="/profile"
+                  className="px-3 py-2 hover:bg-gray-100 rounded"
+                >
+                  Profile
+                </Link>
+                <button
+                  className="px-3 py-2 text-red-500 hover:bg-red-50 rounded"
+                  onClick={handleLogout}
+                >
+                  Logout
+                </button>
+              </div>
+            ) : (
+              <div className="flex flex-col gap-2">
+                <Link to="/login">
+                  <Button variant="outline">Login</Button>
+                </Link>
+                <Link to="/signup">
+                  <Button className="bg-indigo-600 hover:bg-indigo-700 text-white">
+                    Sign Up
+                  </Button>
+                </Link>
+              </div>
+            ))}
         </div>
       )}
     </nav>

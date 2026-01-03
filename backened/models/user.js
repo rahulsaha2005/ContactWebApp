@@ -6,6 +6,14 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    username: {
+      type: String,
+      required: true,
+      unique: true,
+      trim: true,
+      lowercase: true,
+      match: [/^[a-z0-9_]+$/, "Username can only contain letters, numbers, and underscores"],
+    },
     email: {
       type: String,
       required: true,
@@ -21,6 +29,10 @@ const userSchema = new mongoose.Schema(
     },
     profile: {
       type: String,
+    },
+    joinedAt: {
+      type: Date,
+      default: Date.now,
     },
     friends: [
       {
