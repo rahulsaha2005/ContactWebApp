@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Button } from "./ui/button.jsx";
-import AddFriend from "./addFriend.jsx";
+import AddFriend from "./AddFriend.jsx";
 import EditFriend from "./EditFriend.jsx";
 import FriendsTable from "./FriendsTable.jsx";
 import DeleteFriend from "./DeleteFriend.jsx";
