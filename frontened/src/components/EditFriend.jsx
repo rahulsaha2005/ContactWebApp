@@ -25,6 +25,7 @@ export default function EditFriend({ open, setOpen, friend }) {
     newEmail: "",
     newPhone: "",
     Message: "",
+    file: "",
   });
 
   useEffect(() => {
@@ -34,6 +35,7 @@ export default function EditFriend({ open, setOpen, friend }) {
         newEmail: friend.friendEmail || "",
         newPhone: friend.friendPhone || "",
         Message: friend.Message || "",
+        file: "",
       });
     }
   }, [friend]);
@@ -46,15 +48,22 @@ export default function EditFriend({ open, setOpen, friend }) {
   const handleUpdate = async () => {
     try {
       setLoading(true);
-      const res = await axios.put(
-        `${FRIEND_API_END_POINT}/update`,
-        {
-          friendEmail: friend.friendEmail,
-          friendPhone: friend.friendPhone,
-          ...input,
-        },
-        { withCredentials: true }
-      );
+      const formData = new FormData();
+      formData.append("friendName", input.friendName || friend.friendName);
+      formData.append("friendEmail", input.friendEmail || friend.friendEmail);
+      formData.append("friendPhone", input.friendPhone || friend.friendPhone);
+      formData.append("friendPhoto", input.friendPhoto || friend.friendPhoto);
+      formData.append("Message", input.Message);
+      // for (const[a,b] of formData.entries()){
+      //   console.log(a,b);
+      // }
+      if (input.file) {
+        formData.append("file", input.file);
+      }
+
+      const res = await axios.put(`${FRIEND_API_END_POINT}/update`, formData, {
+        withCredentials: true,
+      });
 
       if (res.data.success) {
         dispatch(setAuthUser(res.data.user));
@@ -66,6 +75,12 @@ export default function EditFriend({ open, setOpen, friend }) {
     } finally {
       setLoading(false);
     }
+  };
+
+  const changeFileHandler = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    setInput({ ...input, file });
   };
 
   return (
@@ -119,6 +134,21 @@ export default function EditFriend({ open, setOpen, friend }) {
               name="newPhone"
               value={input.newPhone}
               onChange={changeEventHandler}
+            />
+          </div>
+          <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+            <Label
+              htmlFor="file"
+              className="w-full sm:w-28 text-sm sm:text-right"
+            >
+              Image
+            </Label>
+            <Input
+              id="file"
+              name="file"
+              type="file"
+              accept="image/*"
+              onChange={changeFileHandler}
             />
           </div>
 

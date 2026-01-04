@@ -9,14 +9,13 @@ import {
 } from "./ui/dialog.jsx";
 import { Input } from "./ui/input.jsx";
 import { Label } from "@radix-ui/react-label";
-import { Loader2 } from "lucide-react";
+import { Image, Loader2 } from "lucide-react";
 import { Button } from "./ui/button.jsx";
 import { useDispatch } from "react-redux";
 import { FRIEND_API_END_POINT } from "../utils/constant.js";
 import axios from "axios";
 import { toast } from "sonner";
 import { setAuthUser } from "../redux/authSlice.js";
-
 export default function AddFriend({ open, setOpen }) {
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
@@ -25,6 +24,7 @@ export default function AddFriend({ open, setOpen }) {
     friendEmail: "",
     friendPhone: "",
     Message: "",
+    file: "",
   });
 
   useEffect(() => {
@@ -34,6 +34,7 @@ export default function AddFriend({ open, setOpen }) {
         friendEmail: "",
         friendPhone: "",
         Message: "",
+        file: "",
       });
   }, [open]);
 
@@ -48,19 +49,32 @@ export default function AddFriend({ open, setOpen }) {
 
   const submitHandler = async (e) => {
     e.preventDefault();
+
     if (!input.friendName.trim()) return toast.error("Friend name is required");
     if (!isValidEmail(input.friendEmail))
       return toast.error("Invalid email address");
     if (!isValidPhone(input.friendPhone))
-      return toast.error("Invalid phone number (10-15 digits)");
+      return toast.error("Invalid phone number");
 
     try {
       setLoading(true);
-      const res = await axios.post(`${FRIEND_API_END_POINT}/add`, input, {
+
+      const formData = new FormData();
+      formData.append("friendName", input.friendName);
+      formData.append("friendEmail", input.friendEmail);
+      formData.append("friendPhone", input.friendPhone);
+      formData.append("Message", input.Message);
+
+      if (input.file) {
+        formData.append("file", input.file);
+      }
+
+      const res = await axios.post(`${FRIEND_API_END_POINT}/add`, formData, {
         withCredentials: true,
       });
+
       if (res.data.success) {
-        dispatch(setAuthUser(res.data.user)); 
+        dispatch(setAuthUser(res.data.user));
         toast.success(res.data.message);
         setOpen(false);
       }
@@ -69,6 +83,12 @@ export default function AddFriend({ open, setOpen }) {
     } finally {
       setLoading(false);
     }
+  };
+
+  const changeFileHandler = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    setInput({ ...input, file });
   };
 
   return (
@@ -127,6 +147,21 @@ export default function AddFriend({ open, setOpen }) {
               onChange={changeEventHandler}
               placeholder="+91 9876543210"
               required
+            />
+          </div>
+          <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+            <Label
+              htmlFor="file"
+              className="w-full sm:w-28 text-sm sm:text-right"
+            >
+              Image
+            </Label>
+            <Input
+              id="file"
+              name="file"
+              type="file"
+              accept="image/*"
+              onChange={changeFileHandler}
             />
           </div>
 

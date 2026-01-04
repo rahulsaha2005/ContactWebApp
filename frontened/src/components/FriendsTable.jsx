@@ -39,9 +39,7 @@ export default function FriendsTable({ onEdit, onDelete }) {
 
   if (!friends.length) {
     return (
-      <p className="text-center text-gray-500 mt-4">
-        No friends added yet.
-      </p>
+      <p className="text-center text-gray-500 mt-4">No friends added yet.</p>
     );
   }
 
@@ -77,9 +75,7 @@ export default function FriendsTable({ onEdit, onDelete }) {
             variant="outline"
             size="sm"
             onClick={() =>
-              setSortOrder((prev) =>
-                prev === "asc" ? "desc" : "asc"
-              )
+              setSortOrder((prev) => (prev === "asc" ? "desc" : "asc"))
             }
           >
             {sortOrder === "asc" ? "Asc ↑" : "Desc ↓"}
@@ -88,10 +84,15 @@ export default function FriendsTable({ onEdit, onDelete }) {
       </div>
 
       <div className="overflow-x-auto w-full">
-        <table className="min-w-full divide-y divide-gray-200 dark:divide-zinc-700
-                           bg-white dark:bg-zinc-900 rounded-lg shadow">
+        <table
+          className="min-w-full divide-y divide-gray-200 dark:divide-zinc-700
+                           bg-white dark:bg-zinc-900 rounded-lg shadow"
+        >
           <thead className="bg-gray-100 dark:bg-zinc-800">
             <tr>
+              <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">
+                Profile
+              </th>
               <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">
                 Name
               </th>
@@ -116,6 +117,19 @@ export default function FriendsTable({ onEdit, onDelete }) {
                 key={index}
                 className="hover:bg-gray-50 dark:hover:bg-zinc-800"
               >
+                <td className="px-4 py-2 text-sm text-gray-700 dark:text-gray-200">
+                  <img
+                    src={
+                      friend?.friendPhoto ||
+                      `https://ui-avatars.com/api/?name=${encodeURIComponent(
+                        friend?.friendName || "User"
+                      )}&background=random&color=fff`
+                    }
+                    alt={friend?.friendName || "User"}
+                    className="h-10 w-10 rounded-full object-cover"
+                  />
+                </td>
+
                 <td className="px-4 py-2 text-sm text-gray-700 dark:text-gray-200">
                   {friend.friendName}
                 </td>

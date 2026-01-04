@@ -43,6 +43,7 @@ const userSchema = new mongoose.Schema(
         friendEmail: { type: String, required: true },
         friendPhone: { type: String, required: true },
         Message: { type: String },
+        friendPhoto: { type: String },
         isRegistered: {
           type: Boolean,
           default: false,
